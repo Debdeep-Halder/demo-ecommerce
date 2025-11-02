@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Buyer Console</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --accent:#3b82f6; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, Arial, sans-serif; background:#0f172a; color:var(--text); }
+    header { padding:16px 20px; background:#0b1324; border-bottom:1px solid #25314a; display:flex; align-items:center; justify-content:space-between;}
+    h1 { margin:0; font-size:18px; }
+    main { padding:20px; max-width: 960px; margin: 0 auto; }
+    .btn { padding:8px 12px; border-radius:8px; border:1px solid #374151; background:#0f162b; color:var(--text); cursor:pointer; font-weight:600; font-size:13px;}
+    .btn:hover { border-color: var(--accent); }
+    .msg { margin-top:10px; font-size:13px; min-height:18px }
+    .msg.error { color:#fca5a5 }
+    .msg.ok { color:#86efac }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Buyer Console</h1>
+    <button class="btn" id="logoutBtn">Logout</button>
+  </header>
+
+  <main>
+    <p>Welcome, Buyer!</p>
+    <div class="msg" id="statusMsg"></div>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const statusMsg = document.getElementById('statusMsg');
+    if (!token) {
+      statusMsg.textContent = 'No session found. Please log in as BUYER.';
+      statusMsg.className = 'msg error';
+    }
+
+    document.getElementById('logoutBtn').onclick = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) { window.location.href = "/firstPage.html"; return; }
+      try {
+        const res = await fetch('/users/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+        localStorage.removeItem('token');
+        window.location.href = '/firstPage.html';
+      } catch (e) {
+        localStorage.removeItem('token');
+        window.location.href = '/firstPage.html';
+      }
+    };
+  </script>
+</body>
+</html>
